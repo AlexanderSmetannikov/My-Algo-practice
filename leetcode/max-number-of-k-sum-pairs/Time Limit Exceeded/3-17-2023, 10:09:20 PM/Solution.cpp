@@ -1,0 +1,39 @@
+// https://leetcode.com/problems/max-number-of-k-sum-pairs
+
+class Solution {
+public:
+
+    typedef struct {
+        int val;
+        int count;
+    } num_pair;
+
+    int is_in(vector<num_pair>& pairs, int k) {
+        for (int i = 0; i < pairs.size(); i++) 
+            if (pairs[i].val == k) return i;
+        return -1;
+    }
+
+    int maxOperations(vector<int>& nums, int k) {
+        int ans = 0;
+        if (nums.size() && k != NULL) {
+            sort(nums.begin(), nums.end());
+            vector<num_pair> pairs;
+            int index = 0;
+            for (int i = 0; i < nums.size() && nums[i] < k; i++) {
+                index = is_in(pairs, nums[i]);
+                if (index == -1) pairs.push_back({nums[i], 1});
+                else pairs[index].count++;
+            }
+
+            for (int i = 0; i < pairs.size(); i++) printf("val: %d count: %d\n", pairs[i].val, pairs[i].count);
+            for (int i = 0; i < pairs.size(); i++) {
+                if ( (index = is_in( pairs, (k - pairs[i].val) ) ) != -1) {
+                    ans += min(pairs[i].count, pairs[index].count);
+                }
+            }
+
+        }
+        return ans / 2;
+    }
+};
